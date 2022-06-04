@@ -3,7 +3,6 @@
 ### IMPORTS
 # Database
 import sqlite_Funcs
-from tkinter import E
 
 from numpy import append
 
@@ -14,6 +13,7 @@ import matplotlib.pyplot as plt
 
 # System
 import os
+from tqdm import tqdm
 
 exceptionlist = []
 
@@ -22,12 +22,12 @@ global G
 
 connection = sqlite_Funcs.create_connection("data.sqlite")
 
-def addnodes():
+def addnodes(GROPH):
     ''' adds all the nodes from the database'''
     select_users = "SELECT * from users"
     allusers = sqlite_Funcs.execute_read_query(connection, select_users)
     for i in allusers:
-        G.add_node(
+        GROPH.add_node(
         i[0], 
         year = i[1],                # shape /////
         house = i[2],               # edge, color, outline /////
@@ -50,7 +50,7 @@ def addnodes():
         )
 
 ### CONNECTOR
-def hubber(param : str):
+def hubber(GROPH,param : str):
     """ Connects nodes that share the same parameter to one node that is the prameter
 
     Args:
@@ -63,11 +63,13 @@ def hubber(param : str):
     uniqueVal = []
 
     # for every node in the graph 
-    for node in G:
+    #for node in tqdm(GROPH):
+    for node in GROPH:
         if node in exceptionlist:
-            print("Node: ", node, " is in the exception list ", exceptionlist)
+            pass
+            #print("Node: ", node, " is in the exception list ", exceptionlist)
         else:
-            nodedata = G.nodes[node][param]
+            nodedata = GROPH.nodes[node][param]
         
         # if the data found is already in the unique value list, skip 
         if nodedata in uniqueVal:
@@ -82,83 +84,86 @@ def hubber(param : str):
         uniqueVal.remove("0")
     
     # prints out statement saying what the unique values are in the parameter after all nodes have been searched
-    print("#####################\nThe unique values in parameter: ",param, " are ", uniqueVal)
+    #print("#####################\nThe unique values in parameter: ",param, " are ", uniqueVal)
 
 
 
     for uniquevalue in uniqueVal:
         nodename = "Atribute: " + str(uniquevalue)
-        G.add_node(str(nodename))
+        GROPH.add_node(str(nodename))
         exceptionlist.append(nodename)
         pass
 
-    print("TEST exception list",exceptionlist)
-    for Node in G:
+    #print("TEST exception list",exceptionlist)
+    for Node in GROPH:
 
         if Node in exceptionlist:
-            print("Node: ", Node, " is in the exception list ", exceptionlist)
+            #print("Node: ", Node, " is in the exception list ", exceptionlist)
+            pass
 
         else:
-            data = G.nodes[Node][param]
+            data = GROPH.nodes[Node][param]
             for uniquevalue in uniqueVal:
 
                 if data == uniquevalue:
                     chese  = "Atribute: " + str(uniquevalue)
-                    G.add_edge(Node, chese)
+                    GROPH.add_edge(Node, chese, weight=1)
 
-def classes_edge(given_colour):
+def classes_edge(GROPH,given_colour):
 
     global exceptionlist
 
-    for node in G:
-        print("OG NODE: ", node)
+    for node in GROPH:
+        #print("OG NODE: ", node)
 
         if node in exceptionlist:
-            print(node, "execption")
+            #print(node, "execption")
             pass
         else:
-            raw = G.nodes[node]["classes"]
+            raw = GROPH.nodes[node]["classes"]
             worklist = raw.split("~")
 
-            print(node, "OG NODE DATA",worklist)
+            #print(node, "OG NODE DATA",worklist)
             
-        for testnode in G:
+        for testnode in GROPH:
             if testnode in exceptionlist:
                 pass
             else:
-                print(testnode)
+                #print(testnode)
                 if node == testnode:
-                    print("nodes are the same")
+                    #print("nodes are the same")
+                    pass
                 else:
-                    testraw = G.nodes[testnode]["classes"]
-                    print(testraw)
+                    testraw = GROPH.nodes[testnode]["classes"]
+                    #print(testraw)
                     testworklist = testraw.split("~")
                     a = set(testworklist).intersection(worklist)
-                    print(a)
+                    #print(a)
                     if len(a) == 0:
                         pass
                     else:
-                        G.add_edge(node,testnode,colour= given_colour,weight= len(a))
+                        GROPH.add_edge(node,testnode,colour= given_colour,weight= len(a))
 
 
-def defultgraph():
-    hubber("year")
-    hubber("house")
-    hubber("genshin")
-    hubber("uni")
-    hubber("course")
-    hubber("f1")
-    hubber("sport")
+def defultgraph(GROPH):
+    hubber(GROPH,"year")
+    hubber(GROPH,"house")
+    hubber(GROPH,"genshin")
+    hubber(GROPH,"uni")
+    hubber(GROPH,"course")
+    hubber(GROPH,"f1")
+    hubber(GROPH,"sport")
     #hubber("tutorMath") broken
     #hubber("tutorEng") broken
     #hubber("tutorHums") broken
     #hubber("tutorScience") broken
-    hubber("friends")
+    hubber(GROPH,"friends")
 
 
-    classes_edge('black')
+    classes_edge(GROPH,'black')
 
-    print(G)
+    print(GROPH)
 
-    nx.draw(G, with_labels = True)
+def drawgraph(GROPH):
+    nx.draw(GROPH, with_labels = True)
     plt.show()
