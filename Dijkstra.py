@@ -1,4 +1,4 @@
-from numpy import source
+from math import dist
 import graphing
 import networkx as nx
 
@@ -7,38 +7,43 @@ G = nx.Graph()
 graphing.addnodes(G)
 graphing.defultgraph(G)
 
-#print(nx.dijkstra_path(G,1,4))
+visted = []
+unvisted = []
 
+def dijkstra(GROPH, start, end):
+    global visted
+    global unvisted
 
-from queue import PriorityQueue
+    shortest_distance_from_start = {node: float('inf') for node in list(nx.nodes(GROPH))}
+    previous_vertex = {node: None for node in list(nx.nodes(GROPH))}
 
-def dijkstra(graph: 'networkx.classes.graph.Graph', start: str, end: str):
-    def distance(u, v):
-        return graph.get_edge_data(u, v).get('weight')
+    for node in GROPH:
+        unvisted.append(node)
+
+    #print(shortest_distance_from_start)
+    shortest_distance_from_start[start] = 0
+    current = start
+    neighbours_of_current = list(GROPH.neighbors(current))
+
+    for comrade in neighbours_of_current:
+        comrade_weight = G[current][comrade]["weight"]
+        preexisting_weight = shortest_distance_from_start[comrade]
+        #print(comrade_weight, preexisting_weight)
         
-    prev = {}
-    dist = {v: float('inf') for v in list(nx.nodes(graph))}
-    visited = set()
-    pq = PriorityQueue()
+        if comrade_weight < preexisting_weight:
+            shortest_distance_from_start[comrade] = comrade_weight
+            previous_vertex[comrade] = current
     
-    dist[start] = 0
-    pq.put((dist[start], start))
+    visted.append(current)
     
-    while not pq.empty():
-        curr_cost, curr = pq.get()
-        visited.add(curr)
-        print(f'visiting {curr}')
-        for neighbor in dict(graph.adjacency()).get(curr):
-            path = dist[curr] + distance(curr, neighbor)
-            if path < dist[neighbor]:
-                dist[neighbor] = path
-                prev[neighbor] = curr
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    pq.put((dist[neighbor], neighbor))
-                else:
-                    pq.get((dist[neighbor], neighbor))
-                    pq.put((dist[neighbor], neighbor))
+    #while len(visted) < len(unvisted):
+    for a in shortest_distance_from_start:
+        weight = shortest_distance_from_start[a]
+        print(a, weight)
+    
+    pass
 
 
-dijkstra(G, 1,2)
+dijkstra(G,1,2)
+
+#https://www.youtube.com/watch?v=pVfj6mxhdMw

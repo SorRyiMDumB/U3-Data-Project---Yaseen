@@ -144,6 +144,25 @@ def classes_edge(GROPH,given_colour):
                     else:
                         GROPH.add_edge(node,testnode,colour= given_colour,weight= len(a))
 
+def tutor(GROPH, param):
+    global exceptionlist
+
+    nodename = "Atribute: " + str(param)
+    GROPH.add_node(str(nodename))
+    exceptionlist.append(nodename)
+    for node in GROPH:
+        if node in exceptionlist:
+            #print("Node: ", node, " is in the exception list ", exceptionlist)
+            pass
+
+        else:
+            data = GROPH.nodes[node][param]
+            #print(node,data,type(data))
+            if data == str(1):
+                #print("yes")
+                GROPH.add_edge(node,str(nodename),weight= 1)
+    pass
+
 
 def defultgraph(GROPH):
     hubber(GROPH,"year")
@@ -153,10 +172,10 @@ def defultgraph(GROPH):
     hubber(GROPH,"course")
     hubber(GROPH,"f1")
     hubber(GROPH,"sport")
-    #hubber("tutorMath") broken
-    #hubber("tutorEng") broken
-    #hubber("tutorHums") broken
-    #hubber("tutorScience") broken
+    tutor(GROPH,"tutorMath") 
+    tutor(GROPH,"tutorEng") 
+    tutor(GROPH,"tutorHums") 
+    tutor(GROPH,"tutorScience") 
     hubber(GROPH,"friends")
 
 
@@ -167,3 +186,4 @@ def defultgraph(GROPH):
 def drawgraph(GROPH):
     nx.draw(GROPH, with_labels = True)
     plt.show()
+

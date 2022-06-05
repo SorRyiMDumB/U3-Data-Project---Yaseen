@@ -6,7 +6,9 @@ G = nx.Graph()
 graphing.addnodes(G)
 graphing.defultgraph(G)
 
-length, path = nx.single_source_bellman_ford(G, 1)
+def diameter(GROPH):
+    for u in GROPH:
+        for v in GROPH:
+            print(u,v)
 
-print(length)
-print(path)
+diameter(G)
