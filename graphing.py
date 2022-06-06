@@ -61,15 +61,22 @@ def hubber(GROPH,param : str):
 
     # List of unique values in the parameter 
     uniqueVal = []
-
+    nodesthatsatify = []
     # for every node in the graph 
     #for node in tqdm(GROPH):
+    #print(GROPH.nodes())
     for node in GROPH:
         if node in exceptionlist:
             pass
             #print("Node: ", node, " is in the exception list ", exceptionlist)
         else:
+            nodesthatsatify.append(node)
+            #print(nodesthatsatify)
+
+            #print(node)
+            #print(param)
             nodedata = GROPH.nodes[node][param]
+            #print(nodedata)
         
         # if the data found is already in the unique value list, skip 
         if nodedata in uniqueVal:
@@ -86,14 +93,36 @@ def hubber(GROPH,param : str):
     # prints out statement saying what the unique values are in the parameter after all nodes have been searched
     #print("#####################\nThe unique values in parameter: ",param, " are ", uniqueVal)
 
-
+    nodecreated = []
 
     for uniquevalue in uniqueVal:
+        #print(uniqueVal)
+        #print(uniquevalue)
         nodename = "Atribute: " + str(uniquevalue)
         GROPH.add_node(str(nodename))
         exceptionlist.append(nodename)
+        nodecreated.append(nodename)
         pass
 
+    #print(nodecreated)
+
+    for satnode in nodesthatsatify:
+        #print(satnode)
+        data = GROPH.nodes[satnode][param]
+        #print(data)
+        
+        if str(data) == str(0):
+            #print("data is 0")
+            pass
+        else:
+            chese  = "Atribute: " + str(data)
+            #print(satnode)
+            #print(chese)
+            #print(f"adding edge between {satnode} and {chese}")
+            GROPH.add_edge(satnode, chese, weight=1)
+        
+
+"""
     #print("TEST exception list",exceptionlist)
     for Node in GROPH:
 
@@ -108,6 +137,8 @@ def hubber(GROPH,param : str):
                 if data == uniquevalue:
                     chese  = "Atribute: " + str(uniquevalue)
                     GROPH.add_edge(Node, chese, weight=1)
+"""
+
 
 def classes_edge(GROPH,given_colour):
 
@@ -126,13 +157,17 @@ def classes_edge(GROPH,given_colour):
             #print(node, "OG NODE DATA",worklist)
             
         for testnode in GROPH:
+            
             if testnode in exceptionlist:
+                #print(f"TEST: testnode {testnode} is in the exception")
                 pass
             else:
-                #print(testnode)
+                #print(f"TEST: testnode {testnode} is NOT in the exception")
+                
                 if node == testnode:
                     #print("nodes are the same")
                     pass
+                
                 else:
                     testraw = GROPH.nodes[testnode]["classes"]
                     #print(testraw)
@@ -142,7 +177,12 @@ def classes_edge(GROPH,given_colour):
                     if len(a) == 0:
                         pass
                     else:
-                        GROPH.add_edge(node,testnode,colour= given_colour,weight= len(a))
+                        if node in exceptionlist:
+                            #print(f"TEST: NOT adding edge between {node} and {testnode}")
+                            pass
+                        else:
+                            #print(f"TEST: adding edge between {node} and {testnode}")
+                            GROPH.add_edge(node,testnode,colour= given_colour,weight= len(a))
 
 def tutor(GROPH, param):
     global exceptionlist

@@ -117,6 +117,14 @@ while len(mst_nodes) < G.number_of_nodes():
     prims(G)
     print(len(mst_nodes))
 
+T = nx.Graph()
+for i in mst:
+    uv = i[1]
+    T.add_edge(uv[0], uv[1])
+
+graphing.drawgraph(T)
+
+print(mst)
 
 
 """
