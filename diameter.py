@@ -10,5 +10,6 @@ def diameter(GROPH):
     for u in GROPH:
         for v in GROPH:
             print(u,v)
+            
 
 diameter(G)

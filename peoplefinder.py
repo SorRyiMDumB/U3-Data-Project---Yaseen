@@ -10,39 +10,40 @@ graphing.addnodes(G)
 graphing.defultgraph(G)
 
 def influence(GROPH, aa):
-    influence = {}
-    for node in GROPH:
-        #print(f"{node} is type {type(node)}")
-        if type(node) == int:
-            deg = GROPH.degree(node)
-            fri = GROPH.nodes[node]["friends"]
-            year =  ( 1 / GROPH.nodes[node]["year"] ) * 100
+    influence = {}                                                                      # Dictionary called influence is created
 
-            hobbyscore = 0
-
-            hobbylist = ['genshin', 'f1', 'sport']
+    for node in GROPH:                                                            # Iterates through all nodes in the graph
+        if type(node) == int:                                                       # Checks if the node is a student ( the way that my graph is set up allows me to cheat
+                                                                                              # by checking if the node is a interger as only students are labelled as 1, 2 ... intergers )
             
-            for hoe in hobbylist:
-                chsee = GROPH.nodes[node][hoe]
-                
-                if chsee != 0:
-                    hobbyscore = hobbyscore + 1
-            #print(node, hobbyscore)
+            deg = GROPH.degree(node)                                        # Finds the degree of the node
+            fri = GROPH.nodes[node]["friends"]                          # Finds how many friends the respondant said they had
+            year =  ( 1 / GROPH.nodes[node]["year"] ) * 100        # Finds what year level they are in and changes the value to better suit the calculation
 
-            influence[node] = ( deg * (fri * 0.93) ) - year
-            highest_val = influence[node]
-            highest = node
-    
-    #print(influence)
-    for student in influence:
-        if highest_val > influence[student]:
+            hobbyscore = 0                                                          # Creates a hobbyscore variable 
+
+            hobbylist = ['genshin', 'f1', 'sport']                          # Creates a attributes list with attributes that I think are hobbies
+            
+            for hoe in hobbylist:                                                  # Iterates through the hobby list
+                chsee = GROPH.nodes[node][hoe]                          # Finds the hobbies that the node does
+                
+                if chsee != 0:                                                          # If the hobby is not 0
+                    hobbyscore = hobbyscore + 1                             # Adds one to the hobby score
+
+            influence[node] = ( deg * (fri * 0.93) ) - year             # The node and its infuluence score are added to the dictionary infulence 
+            highest_val = influence[node]                                    # The highest value is set an arbitray value
+            highest = node                                                           # The highest node is set an arbitray node
+
+    for student in influence:                                                   # Iterates through the students in influence dictionary 
+        if highest_val > influence[student]:                              # finds the node with the highest score
             pass
         else:
             highest_val = influence[student]
             highest = student
+
     a = (GROPH.nodes[highest]["friends"])
     
-    if aa == 'print':
+    if aa == 'print':                                                                  # prints out the person who is the most infuential
         print(
 f"""
     Student {highest} connects to {GROPH.degree(highest)} diffrent things and has {a} friends,
@@ -51,6 +52,15 @@ f"""
 )
     else:
         return influence
+
+
+
+
+
+
+
+
+
 
 def atar(GROPH, aa):
     bigbrains = []
@@ -68,6 +78,16 @@ f"""
 )
     else:
         return bigbrains
+
+
+
+
+
+
+
+
+
+
 
 def news(GROPH):
     
